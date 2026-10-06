@@ -1,0 +1,18 @@
+name: Check configs
+
+# Optional. Runs on pull requests that touch configs/ and fails if any
+# config file is not valid JSON or not a TF2 Building Planner export.
+on:
+  pull_request:
+    paths: ['configs/**']
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate config files
+        run: python3 build_index.py
