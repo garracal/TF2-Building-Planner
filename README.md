@@ -2,7 +2,7 @@
 
 A free, in-browser tool for planning engineer buildings on top-down Team Fortress 2 maps, with a library of configs shared by the community.
 
-**Use it:** https://YOUR-USERNAME.github.io/YOUR-REPO/
+**Use it:** https://garracal.github.io/TF2-Building-Planner
 
 Everything you make is saved in your own browser. Nothing is uploaded anywhere unless you share a config.
 
