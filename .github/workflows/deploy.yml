@@ -1,0 +1,46 @@
+name: Deploy site
+
+# Rebuilds the library index and publishes the site to GitHub Pages
+# whenever something is merged into main (or when you press "Run workflow").
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history, so "newest" sorting can use each file's first commit date
+
+      - name: Build library index
+        run: python3 build_index.py || echo "::warning::Some config files were skipped. See the log above."
+
+      - name: Assemble site
+        run: |
+          mkdir _site
+          cp index.html index.json _site/
+          cp -r configs _site/
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
