@@ -15,16 +15,16 @@ entries, skipped = [], []
 
 
 def added(f):
-    """Date the file was first committed (needs full git history), else its modified time."""
+    """When the file was first committed (needs full git history), else its modified time. UTC, to the second."""
     try:
         out = subprocess.run(
-            ["git", "log", "--diff-filter=A", "--follow", "--format=%cI", "--", str(f)],
+            ["git", "log", "--diff-filter=A", "--follow", "--format=%ct", "--", str(f)],
             cwd=ROOT, capture_output=True, text=True, timeout=20).stdout.split()
         if out:
-            return out[-1][:10]
+            return datetime.fromtimestamp(int(out[-1]), tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     except Exception:
         pass
-    return datetime.fromtimestamp(f.stat().st_mtime, tz=timezone.utc).date().isoformat()
+    return datetime.fromtimestamp(f.stat().st_mtime, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 for f in sorted(CONFIGS.rglob("*.json")):
